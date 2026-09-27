@@ -1,4 +1,3 @@
-
 # Databricks notebook source
 # S08 | AP4 | Databricks e Integraciones
 # Autor: Alejandro Oswaldo de Jesús Soto Cárdenas
@@ -12,8 +11,7 @@ print("Proyecto sincronizado desde GitHub")
 
 # COMMAND ----------
 
-# Lectura de usuarios desde el repositorio
-# La ruta se ajustará si el workspace usa otra ubicación.
+# Lectura de usuarios desde el Git Folder
 
 ruta_csv = "../data/users_dirty.csv"
 
@@ -29,9 +27,15 @@ display(df.limit(10))
 # COMMAND ----------
 
 # Cantidad de registros
-print("Total de registros:", df.count())
+
+total_registros = df.count()
+
+print("Total de registros:", total_registros)
+
+# COMMAND ----------
 
 # Distribución por país
+
 display(
     df.groupBy("country")
       .count()
@@ -41,8 +45,30 @@ display(
 # COMMAND ----------
 
 # Revisión de registros duplicados
-display(
+
+duplicados = (
     df.groupBy("user_id")
       .count()
       .filter(F.col("count") > 1)
 )
+
+display(duplicados)
+
+# COMMAND ----------
+
+# Resumen de calidad de datos
+
+print("=== RESUMEN DE CALIDAD ===")
+
+print("Total de registros:", df.count())
+print("Total de columnas:", len(df.columns))
+print("Registros duplicados:", duplicados.count())
+
+# Valores nulos por columna
+
+nulls = df.select([
+    F.count(F.when(F.col(c).isNull(), c)).alias(c)
+    for c in df.columns
+])
+
+display(nulls)
