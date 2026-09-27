@@ -1,0 +1,31 @@
+
+name: Sincronizar GitHub con Databricks
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      REPO_PATH: /Workspace/Users/${{ secrets.DATABRICKS_EMAIL }}/S08-Databricks-Integraciones
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Verificar autenticacion
+        run: databricks current-user me
+
+      - name: Sincronizar Git Folder
+        run: |
+          databricks repos update "$REPO_PATH" --branch main
