@@ -13,7 +13,7 @@ print("Proyecto sincronizado desde GitHub")
 
 # Lectura de usuarios desde el Git Folder
 
-ruta_csv = "/Workspace/Users/TU_CORREO/S08-Databricks-Integraciones/data/users_dirty.csv"
+ruta_csv = "../data/users_dirty.csv"
 
 df = (
     spark.read
